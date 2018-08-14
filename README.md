@@ -1,6 +1,6 @@
-# spanish_grammar_app_flutter
+# Lengua
 
-A new Flutter project.
+The best way to learn and master Spanish grammar.
 
 ## Getting Started
 
