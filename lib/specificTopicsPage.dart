@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'package:Lengua/authFiles/auth.dart';
 import 'package:Lengua/onWillPopFunction.dart';
+import 'package:Lengua/quizPortion/controller/intermediatePage.dart';
+import 'package:Lengua/quizPortion/view/quizPage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -20,8 +23,10 @@ class SpecificTopicsPage extends StatefulWidget {
   final FirebaseUser user;
   final GoogleSignIn googleSignIn;
   //appBarTitle currently doesn't work
+  final BaseAuth auth;
 
-  SpecificTopicsPage({this.generalTopicIndex, this.appBarTitle, this.user, this.googleSignIn});
+  SpecificTopicsPage({this.generalTopicIndex, this.appBarTitle, this.user, this.googleSignIn, this.auth
+});
 
 
   @override
@@ -33,7 +38,7 @@ class _SpecificTopicsPageState extends State<SpecificTopicsPage> {
 _SpecificTopicsPageState({
     Key key, 
     // this.layoutGroup,
-    this.onLayoutToggle
+    this.onLayoutToggle,
   });
 
   // final LayoutGroup layoutGroup;
@@ -245,6 +250,8 @@ _SpecificTopicsPageState({
             //   ),
             // ),
             SliverAppBar(
+              forceElevated: true,
+              elevation: 0.0,
               automaticallyImplyLeading: false,
               backgroundColor: Colors.orangeAccent,
               leading: IconButton(
@@ -255,6 +262,7 @@ _SpecificTopicsPageState({
                   Navigator.push(context, MaterialPageRoute(
                     //make sure that if you go back got popping//pushing with a route, that you give it the necessary parameters!!! function might break bc widget.user.email might call on null do to calling GeneralTopicsPage without having the 'user' property filled in
                     builder: (context) => GeneralTopicsPage(
+                      auth: widget.auth,
                       user: widget.user,
                       googleSignIn: widget.googleSignIn,
                     ),
@@ -376,7 +384,7 @@ _SpecificTopicsPageState({
             SliverPadding(
               padding: EdgeInsets.all(16.0),
               sliver: SliverFixedExtentList(
-                itemExtent: 460.0,
+                itemExtent: 290.0,
                   delegate:  SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
                     return StreamBuilder(
@@ -410,7 +418,7 @@ _SpecificTopicsPageState({
   
 }
 
-  
+
 
   Widget _buildSpecificItems(BuildContext context, DocumentSnapshot document, int index) {
 
@@ -426,217 +434,307 @@ _SpecificTopicsPageState({
       }
     }
 
+
+   
+
   
-    return GestureDetector(
-      
-       onTap: (){
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) => QuestionPage(
-            generalTopicIndex: widget.generalTopicIndex,
-            appBarTitle: widget.appBarTitle, 
-            specificTopicIndex: document.documentID,
-            passedInIndex: 0,
-            numberCorrect: 0,
-            numberWrong: 0,
-            user: widget.user,
-            googleSignIn: widget.googleSignIn,
-          )
-        ));
-      },
+    return InkWell(
+      child: GestureDetector(
+        
+         onTap: (){
+          // Navigator.push(context, MaterialPageRoute(
+          //   builder: (context) => QuestionPage(
+          //     generalTopicIndex: widget.generalTopicIndex,
+          //     appBarTitle: widget.appBarTitle, 
+          //     specificTopicIndex: document.documentID,
+          //     passedInIndex: 0,
+          //     numberCorrect: 0,
+          //     numberWrong: 0,
+          //     user: widget.user,
+          //     googleSignIn: widget.googleSignIn,
+          //     auth: widget.auth,
+          //   )
+          // ));
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context) => QuizPage(
+              document.documentID,
+              widget.generalTopicIndex,
+              widget.user,
+              widget.googleSignIn,
+              widget.auth,
+              widget.appBarTitle
+            ),
+          ));
+        },
 
-      child: Container(
-        decoration: BoxDecoration(
-           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            colors: [
-              Colors.yellow[700],
-              // Colors.amber[300]
-              Colors.yellow[800]
-            ]
-          ),
-          borderRadius: BorderRadius.all(Radius.circular(15.0)),
-          boxShadow: [BoxShadow(
-            color: Colors.black26,
-            blurRadius: 20.0,
-            spreadRadius: 3.0
-          ),]
-        ),
-
-        margin: EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
-        height: 300.0,
         child: Container(
+          decoration: BoxDecoration(
+             gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              colors: [
+                Colors.yellow[700],
+                // Colors.amber[300]
+                Colors.yellow[800]
+              ]
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(15.0)),
+            boxShadow: [BoxShadow(
+              color: Colors.black26,
+              blurRadius: 20.0,
+              spreadRadius: 3.0
+            ),]
+          ),
+
+          margin: EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
+          // height: 300.0,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  // color: Colors.orange,
-                  borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                ),
-                padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 10.0),
-                child: Text(
-                  document['title'],
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    fontSize: 40.0,
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      height: 50.0,
+                      // width: ,
+                      padding: EdgeInsets.all(10.0),
+                      decoration: BoxDecoration(
+                        color: Colors.orange[400],
+                        border: Border.all(color: Colors.transparent),
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(20.0),
+                          topLeft: Radius.circular(20.0)
+                        )
+                      ),
+                      margin: EdgeInsets.only(bottom: 20.0),
+                      child: Text(document['title'],
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold
+                      ),
+                      textAlign: TextAlign.left,
+                      )
+                    ),
                   ),
-                ),
+                  
+                ],
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Container(
-                    decoration:  BoxDecoration(
-                       gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        colors: [
-                          Colors.amber[200],
-                          Colors.amber[300], 
-                        ]
-                      ),
-                      //PUT A BIT OF TRANSPARENCY SO THAT YOU CAN SEE THE BACKGROUND GO THROUGH A BIT!!!
-                      borderRadius: BorderRadius.circular(30.0),
-                      // boxShadow: [
-                      //   BoxShadow(
-                      //     color: Colors.black12,
-                      //     spreadRadius: 10.0,
-                      //     offset: Offset(0.0, 5.0),
-                      //     blurRadius: 20.0
-                      //   ),
-                      // ],
-                    ),
-                    margin: EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 10.0),
-                    child: Column(
-                      children: <Widget>[
-                        // Icon(Icons.keyboard_arrow_right),
-                        Container(
-                          padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
-                          child: Text(
-                            "Article",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )
-                        ),
-                        Divider(),
-                        Padding(
-                          padding: const EdgeInsets.all(6.0),
-                          child: Icon(
-                            FontAwesomeIcons.newspaper,
-                            size: 40.0,
+                  Expanded(
+                    child: Material(
+                      color: Colors.transparent,
+                      child: GestureDetector(
+                       
+                          
+                        
+                        child: Container(
+                          decoration: BoxDecoration(
+                            // gradient: LinearGradient(
+                            //   begin: Alignment.topCenter,
+                            //   colors: [
+                            //     Colors.amber[200],
+                            //     Colors.amber[300], 
+                            //   ]
+                            // ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.orange[200],
+                                blurRadius: 0.0,
+                                spreadRadius: 0.0,
+                                offset: Offset(0.0, 10.0),
+                              )
+                            ],
+                            color: Colors.orange[100],
+                            
+                            border: Border.all(color: Colors.transparent),
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(30.0),
+                              topLeft: Radius.circular(30.0),
+                              bottomRight: Radius.circular(30.0),
+                              bottomLeft: Radius.circular(5.0),
+                            ),                      
                           ),
-                        )
-                      ],
+                          margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 20.0),
+                          padding: EdgeInsets.all(15.0),
+                            child: Column(
+                              children: <Widget>[
+                                InkWell(
+                                  onTap: () {},
+                                  child: Container(
+                                    child: Icon(FontAwesomeIcons.history)
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Text('History', style: TextStyle(fontWeight: FontWeight.bold),),
+                                ),
+                              ],
+                            ),
+                          ),
+                      ),
                     ),
-                    height: 120.0,
-                    width: 100.0,
-                    
                   ),
-                  Container(
-                    decoration:  BoxDecoration(
-                       gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        colors: [
-                          Colors.amber[300],
-                          Colors.amber[500], 
-                        ]
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        // gradient: LinearGradient(
+                        //   begin: Alignment.topCenter,
+                        //   colors: [
+                        //     Colors.amber[200],
+                        //     Colors.amber[300], 
+                        //   ]
+                        // ),
+
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.orange[200],
+                            blurRadius: 0.0,
+                            spreadRadius: 0.0,
+                            offset: Offset(0.0, 10.0)
+                          )
+                        ],
+                        color: Colors.orange[100],
+                        border: Border.all(color: Colors.transparent),
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(30.0),
+                          topLeft: Radius.circular(30.0),
+                          bottomRight: Radius.circular(30.0),
+                          bottomLeft: Radius.circular(30.0),
+                        ),                      
                       ),
-                      //PUT A BIT OF TRANSPARENCY SO THAT YOU CAN SEE THE BACKGROUND GO THROUGH A BIT!!!
-                      borderRadius: BorderRadius.circular(100.0),
-                      // boxShadow: [
-                      //   BoxShadow(
-                      //     color: Colors.black12,
-                      //     spreadRadius: 10.0,
-                      //     offset: Offset(0.0, 5.0),
-                      //     blurRadius: 20.0
-                      //   ),
-                      // ],
+                      margin: EdgeInsets.fromLTRB(0.0, 0.0, 15.0, 20.0),
+                      padding: EdgeInsets.all(15.0),
+                        child: Column(
+                          children: <Widget>[
+                            InkWell(
+                              onTap: () {},
+                              child: Container(
+                                // padding: EdgeInsets.all(12.0),
+                                // decoration: BoxDecoration(
+                                //   color: Colors.orange[300],
+                                //   shape: BoxShape.circle
+                                // ),
+                                child: Icon(FontAwesomeIcons.newspaper)
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text('Article', style: TextStyle(fontWeight: FontWeight.bold),),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ),
+                    Expanded(
+                      child: Container(
+                      decoration: BoxDecoration(
+                        // gradient: LinearGradient(
+                        //   begin: Alignment.topCenter,
+                        //   colors: [
+                        //     Colors.amber[400],
+                        //     Colors.amber[500], 
+                        //   ]
+                        // ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.amber[300],
+                            blurRadius: 0.0,
+                            spreadRadius: 0.0,
+                            offset: Offset(0.0, 10.0)
+                          )
+                        ],
+                        color: Colors.amber[200],
+                        border: Border.all(color: Colors.transparent),
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(30.0),
+                          topLeft: Radius.circular(30.0),
+                          bottomRight: Radius.circular(30.0),
+                          bottomLeft: Radius.circular(30.0),
+                        ),                      
+                      ),
+                      margin: EdgeInsets.fromLTRB(0.0, 0.0, 15.0, 20.0),
+                      padding: EdgeInsets.all(15.0),
+                        child: Column(
+                          children: <Widget>[
+                            InkWell(
+                              onTap: () {},
+                              child: Container(
+                                // padding: EdgeInsets.all(12.0),
+                                // decoration: BoxDecoration(
+                                //   color: Colors.orange[300],
+                                //   shape: BoxShape.circle
+                                // ),
+                                child: Icon(FontAwesomeIcons.pencilAlt)
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text('Quiz', style: TextStyle(fontWeight: FontWeight.bold),),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                    margin: EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 10.0),
-                    child: Column(
-                      children: <Widget>[
-                        // Icon(Icons.keyboard_arrow_right),
-                        Container(
-                          padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
-                          child: Text(
-                            "Quiz",
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                     decoration: BoxDecoration(
+                        // gradient: LinearGradient(
+                        //   begin: Alignment.topCenter,
+                        //   colors: [
+                        //     Colors.amber[400],
+                        //     Colors.amber[500], 
+                        //   ]
+                        // ),
+                        
+                        color: Colors.amber[300],
+                        border: Border.all(color: Colors.transparent),
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(30.0),
+                          topLeft: Radius.circular(30.0),
+                          bottomRight: Radius.circular(30.0),
+                          bottomLeft: Radius.circular(30.0),
+                        ),                      
+                      ),
+                      margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 20.0),
+                      padding: EdgeInsets.all(15.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(right: 13.0),
+                            child: Icon(
+                              FontAwesomeIcons.gamepad,
+                              size: 20.0,
+                            ),
+                          ),
+                          Text(
+                            'Quiz High Score: ',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              color: Colors.white
+                              color: Colors.black
+                              
                             ),
-                          )
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                          child: Divider(),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.all(6.0),
-                          child: Icon(
-                            FontAwesomeIcons.pencilAlt,
-                            size: 40.0,
-                            color: Colors.white,
                           ),
-                        )
-                      ],
+                          Text(
+                            ' ${highScore.toString()}',
+                            style: TextStyle(
+                              // fontWeight: FontWeight.bold,
+                              color: Colors.black
+                              
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    height: 120.0,
-                    width: 120.0,
-                    
                   ),
                 ],
               ),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.amberAccent,
-                  borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                ),
-                margin: EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 5.0),
-                height: 120.0,
-                // color: Colors.red,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20.0, 25.0, 20.0, 15.0),
-                          child: Text(
-                            "High Score: "
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-                          child: Text(
-                            highScore.toString(),
-                            // + document.data.length.toString(),
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 25.0
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    RotatedBox(
-                      quarterTurns: 1,
-                      child: Divider(),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                        color: Colors.white
-                      ),
-                      height: 80.0,
-                      width: 80.0,
-                      margin: EdgeInsets.all(10.0)
-                    ),
-                  ],
-                ),
-              ),
+               
             ],
           ),
         ),
@@ -721,3 +819,179 @@ class HeroHeader extends SpecificTopicsPage implements SliverPersistentHeaderDel
   FloatingHeaderSnapConfiguration get snapConfiguration => null;
 }
 
+
+
+
+// Row(
+//                 children: <Widget>[
+//                   Container(
+//                     width: double.infinity,
+//                     decoration: BoxDecoration(
+//                       // color: Colors.orange,
+//                       borderRadius: BorderRadius.all(Radius.circular(15.0)),
+//                     ),
+//                     margin: const EdgeInsets.fromLTRB(10.0, 20.0, 0.0, 10.0),
+//                     child: Text(
+//                       document['title'],
+//                       textAlign: TextAlign.start,
+//                       style: TextStyle(
+//                         fontWeight: FontWeight.bold,
+//                         color: Colors.white,
+//                         fontSize: 20.0,
+//                       ),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//               Row(
+//                 mainAxisAlignment: MainAxisAlignment.center,
+//                 children: <Widget>[
+//                   Container(
+//                     decoration:  BoxDecoration(
+//                        gradient: LinearGradient(
+//                         begin: Alignment.topCenter,
+//                         colors: [
+//                           Colors.amber[200],
+//                           Colors.amber[300], 
+//                         ]
+//                       ),
+//                       //PUT A BIT OF TRANSPARENCY SO THAT YOU CAN SEE THE BACKGROUND GO THROUGH A BIT!!!
+//                       borderRadius: BorderRadius.circular(30.0),
+//                       // boxShadow: [
+//                       //   BoxShadow(
+//                       //     color: Colors.black12,
+//                       //     spreadRadius: 10.0,
+//                       //     offset: Offset(0.0, 5.0),
+//                       //     blurRadius: 20.0
+//                       //   ),
+//                       // ],
+//                     ),
+//                     margin: EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 10.0),
+//                     child: Column(
+//                       children: <Widget>[
+//                         // Icon(Icons.keyboard_arrow_right),
+//                         Container(
+//                           padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+//                           child: Text(
+//                             "Article",
+//                             style: TextStyle(
+//                               fontWeight: FontWeight.bold,
+//                             ),
+//                           )
+//                         ),
+//                         Divider(),
+//                         Padding(
+//                           padding: const EdgeInsets.all(6.0),
+//                           child: Icon(
+//                             FontAwesomeIcons.newspaper,
+//                             size: 40.0,
+//                           ),
+//                         )
+//                       ],
+//                     ),
+//                     height: 120.0,
+//                     width: 100.0,
+                    
+//                   ),
+//                   Container(
+//                     decoration:  BoxDecoration(
+//                        gradient: LinearGradient(
+//                         begin: Alignment.topCenter,
+//                         colors: [
+//                           Colors.amber[300],
+//                           Colors.amber[500], 
+//                         ]
+//                       ),
+//                       //PUT A BIT OF TRANSPARENCY SO THAT YOU CAN SEE THE BACKGROUND GO THROUGH A BIT!!!
+//                       borderRadius: BorderRadius.circular(100.0),
+//                       // boxShadow: [
+//                       //   BoxShadow(
+//                       //     color: Colors.black12,
+//                       //     spreadRadius: 10.0,
+//                       //     offset: Offset(0.0, 5.0),
+//                       //     blurRadius: 20.0
+//                       //   ),
+//                       // ],
+//                     ),
+//                     margin: EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 10.0),
+//                     child: Column(
+//                       children: <Widget>[
+//                         // Icon(Icons.keyboard_arrow_right),
+//                         Container(
+//                           padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+//                           child: Text(
+//                             "Quiz",
+//                             style: TextStyle(
+//                               fontWeight: FontWeight.bold,
+//                               color: Colors.white
+//                             ),
+//                           )
+//                         ),
+//                         Padding(
+//                           padding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
+//                           child: Divider(),
+//                         ),
+//                         Container(
+//                           padding: const EdgeInsets.all(6.0),
+//                           child: Icon(
+//                             FontAwesomeIcons.pencilAlt,
+//                             size: 40.0,
+//                             color: Colors.white,
+//                           ),
+//                         )
+//                       ],
+//                     ),
+//                     height: 120.0,
+//                     width: 120.0,
+                    
+//                   ),
+//                 ],
+//               ),
+//               Container(
+//                 decoration: BoxDecoration(
+//                   color: Colors.amberAccent,
+//                   borderRadius: BorderRadius.all(Radius.circular(15.0)),
+//                 ),
+//                 margin: EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 5.0),
+//                 height: 120.0,
+//                 // color: Colors.red,
+//                 child: Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                   children: <Widget>[
+//                     Column(
+//                       children: <Widget>[
+//                         Padding(
+//                           padding: const EdgeInsets.fromLTRB(20.0, 25.0, 20.0, 15.0),
+//                           child: Text(
+//                             "High Score: "
+//                           ),
+//                         ),
+//                         Padding(
+//                           padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+//                           child: Text(
+//                             highScore.toString(),
+//                             // + document.data.length.toString(),
+//                             style: TextStyle(
+//                               fontWeight: FontWeight.bold,
+//                               fontSize: 25.0
+//                             ),
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                     RotatedBox(
+//                       quarterTurns: 1,
+//                       child: Divider(),
+//                     ),
+//                     Container(
+//                       decoration: BoxDecoration(
+//                         borderRadius: BorderRadius.all(Radius.circular(15.0)),
+//                         color: Colors.white
+//                       ),
+//                       height: 80.0,
+//                       width: 80.0,
+//                       margin: EdgeInsets.all(10.0)
+//                     ),
+//                   ],
+//                 ),
+//               ),

@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:Lengua/authFiles/auth.dart';
 import 'package:Lengua/onWillPopFunction.dart';
+import 'package:Lengua/settingsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -7,13 +9,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'specificTopicsPage.dart';
 import 'main.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:icons_helper/icons_helper.dart';
 
 
 
 class GeneralTopicsPage extends StatefulWidget {
 
-  GeneralTopicsPage({this.user, this.googleSignIn});
+  GeneralTopicsPage({this.auth, this.user, this.googleSignIn});
 
+  final BaseAuth auth;
   final FirebaseUser user;
   final GoogleSignIn googleSignIn;
 
@@ -48,9 +52,6 @@ class _GeneralTopicsPageState extends State<GeneralTopicsPage> {
   Widget build(BuildContext context) {
 
 
-
-
-
      var decoratedBox = DecoratedBox(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -83,14 +84,26 @@ class _GeneralTopicsPageState extends State<GeneralTopicsPage> {
         body: CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
+              forceElevated: true,
+              elevation: 0.0,
               backgroundColor: Colors.orangeAccent,
               automaticallyImplyLeading: false,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back_ios),
-                onPressed: (){
-                  Navigator.popAndPushNamed(context, "/loginPage");
-                },
-              ),
+              // leading: IconButton(
+              //   icon: Icon(Icons.arrow_back_ios),
+              //   onPressed: (){
+              //     Navigator.popAndPushNamed(context, "/loginPage");
+              //   },
+              // ),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(FontAwesomeIcons.cog),
+                  onPressed: (){
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => SettingsPage(auth: widget.auth, user: widget.user,)
+                    ));
+                  },
+                ),
+              ],
               pinned: true,
               title: Text(
                 "Lengua",
@@ -108,6 +121,9 @@ class _GeneralTopicsPageState extends State<GeneralTopicsPage> {
                       decoration: BoxDecoration(
                         // color: Color(0xFFffb142),
                         color: Colors.orange[300],
+                        borderRadius: BorderRadius.only(
+                          bottomRight: Radius.circular(15.0)
+                        ),
                       ),
                       padding: EdgeInsets.fromLTRB(0.0, 30.0, 20.0, 5.0),
                       height: 70.0,
@@ -174,7 +190,7 @@ Widget _buildGeneralItems(BuildContext context, DocumentSnapshot document, int i
 
 
   var title = document['title'];
-  var icon = ("FontAwesomeIcons." + document['icon']);
+  var icon = (document['icon']);
   // var correctIcon = Icon(icon.value);
 
   //process to convert and get color from string to casting it as Color()
@@ -186,11 +202,11 @@ Widget _buildGeneralItems(BuildContext context, DocumentSnapshot document, int i
 
 
   //process to convert and get icon from string to casting it as Icon()
-  String iconString = document['color']; // Color(0x12345678)
-  // print(iconString);
-  String valueIconString = iconString.split('(0x')[1].split(')')[0]; // kind of hacky...
-  int valueIcon = int.parse(valueIconString, radix: 16);
-  Color correctIcon = new Color(valueIcon);
+
+  
+  
+
+  
   
 
 
@@ -211,6 +227,7 @@ Widget _buildGeneralItems(BuildContext context, DocumentSnapshot document, int i
             appBarTitle: document['title'].toString(),
             user: widget.user,
             googleSignIn: widget.googleSignIn,
+            auth: widget.auth,
           ),
         ));
       },
@@ -268,7 +285,8 @@ Widget _buildGeneralItems(BuildContext context, DocumentSnapshot document, int i
               Container(
                 margin: EdgeInsets.fromLTRB(0.0, 50.0, 0.0, 0.0),
                 child: Icon(
-                  FontAwesomeIcons.longArrowAltRight,
+                  // FontAwesomeIcons.handshak,
+                  getIconGuessFavorFA(name: icon),
                   size: 50.0,
                   // color: Colors.blueAccent[200],
                   color: Colors.orangeAccent[400],

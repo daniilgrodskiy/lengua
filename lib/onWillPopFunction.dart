@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:Lengua/generalTopicsPage.dart';
 import 'package:Lengua/specificTopicsPage.dart';
 import 'package:flutter/material.dart';
 

@@ -20,12 +20,19 @@ dependencies:
   google_sign_in:
   cloud_firestore: ^0.7.4
   font_awesome_flutter: ^7.1.0
+  icons_helper: ^0.0.7
+  flutter_launcher_icons: ^0.6.1
+  animated_background: ^1.0.0
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
+flutter_icons:
+  image_path:  "/Users/daniilgrodskiy/Desktop/FlutterApps/spanish_grammar_app_flutter/assets/lengua_app_icon.png"
+  android: true
+  ios: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
@@ -45,6 +52,11 @@ flutter:
    - assets/wallpaper.jpg
    - assets/test_background.png
    - assets/general_topics_backgrounds/generalTopicsBackground.png
+   - assets/confetti.png
+
+  
+  
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.

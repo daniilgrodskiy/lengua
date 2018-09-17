@@ -1,10 +1,11 @@
 import 'dart:async';
+import 'package:Lengua/authFiles/auth.dart';
+import 'package:Lengua/specificTopicsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'generalTopicsPage.dart';
-import 'specificTopicsPage.dart';
 import 'main.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'onWillPopFunction.dart';
@@ -17,6 +18,7 @@ class QuestionPage extends StatefulWidget {
   final appBarTitle;
   final user;
   final googleSignIn;
+  final BaseAuth auth;
   
   //appBarTitle currently doesn't work
 
@@ -34,6 +36,7 @@ class QuestionPage extends StatefulWidget {
     this.numberWrong,
     this.user,
     this.googleSignIn,
+    this.auth,
   });
 
 
@@ -423,6 +426,7 @@ class _QuestionPageState extends State<QuestionPage> {
                   appBarTitle: widget.appBarTitle, 
                   user: widget.user,
                   googleSignIn: widget.googleSignIn,
+                  auth: widget.auth,
                 )
               ));
 
@@ -446,12 +450,13 @@ class _QuestionPageState extends State<QuestionPage> {
                     numberCorrect: widget.numberCorrect + 1,
                     user: widget.user,
                     googleSignIn: widget.googleSignIn,
+                    auth: widget.auth,
                   ),
                 ));
               }
             }
           else {
-            //what happens if answer is inccorect
+            //what happens if answer is incorrect
             print("Answer is incorrect!");
             if (index == documentLength - 1) {
               //checks if you're on the last question
@@ -466,6 +471,7 @@ class _QuestionPageState extends State<QuestionPage> {
                   appBarTitle: widget.appBarTitle,
                   user: widget.user,
                   googleSignIn: widget.googleSignIn,
+                  auth: widget.auth,
                 )
               ));
 
@@ -486,6 +492,7 @@ class _QuestionPageState extends State<QuestionPage> {
                     numberWrong: widget.numberWrong + 1,
                     user: widget.user,
                     googleSignIn: widget.googleSignIn,
+                    auth: widget.auth,
                   ),
                 ));
               }
@@ -515,13 +522,7 @@ class _QuestionPageState extends State<QuestionPage> {
     );
   }
 
-  Widget _buildQuestionPage(BuildContext context, DocumentSnapshot document, int documentLength, int index, snapshot) {
-
-
-
-   
-              
-                    
+  Widget _buildQuestionPage(BuildContext context, DocumentSnapshot document, int documentLength, int index, snapshot) {    
          
 
     final double statusBarHeight = MediaQuery
@@ -635,6 +636,7 @@ class _QuestionPageState extends State<QuestionPage> {
                                             appBarTitle: widget.appBarTitle, 
                                             user: widget.user,
                                             googleSignIn: widget.googleSignIn,
+                                            auth: widget.auth,
                                           )
                                         ));
                                       },
