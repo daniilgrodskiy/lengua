@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:Lengua/onWillPopFunction.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -229,169 +230,181 @@ _SpecificTopicsPageState({
         child: hero,
       );
 
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: <Widget>[
+    return WillPopScope(
+      onWillPop: () => exitApp(context),
+      child: Scaffold(
+        body: CustomScrollView(
+          slivers: <Widget>[
 
-          // SliverPersistentHeader(
-          //   delegate: HeroHeader(
-          //     onLayoutToggle: onLayoutToggle,
-          //     minExtent: 150.0,
-          //     maxExtent: 250.0,
-              
-          //   ),
-          // ),
-          SliverAppBar(
-            automaticallyImplyLeading: false,
-            backgroundColor: Colors.orangeAccent,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back_ios),
-              onPressed: (){
-                // Navigator.(context, ModalRoute.withName("/loginPage"));
-                // Navigator.popUntil(context, ModalRoute.withName('/generalTopicsPage'));
-                Navigator.push(context, MaterialPageRoute(
-                  //make sure that if you go back got popping//pushing with a route, that you give it the necessary parameters!!! function might break bc widget.user.email might call on null do to calling GeneralTopicsPage without having the 'user' property filled in
-                  builder: (context) => GeneralTopicsPage(
-                    user: widget.user,
-                    googleSignIn: widget.googleSignIn,
-                  ),
-                ));
-              },
-            ),
-            pinned: true,
-            // expandedHeight: 300.0,
-            // floating: true,
-            // snap: false,
-            // flexibleSpace: Padding(
-            //   padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-            //   child: titleBoxHeader,
-            // ),
-            title: Text(
-              widget.appBarTitle.toString(),
-              style: TextStyle(
-                fontFamily: "viga"
-              ),
-            ),
-          ),
-          //   expandedHeight: 200.0,
-          //   bottom: PreferredSize(
-          //     preferredSize: new Size.fromHeight(200.0),
-          //     child: Container(
-          //       // child: Text(
-          //       //   widget.generalTopicIndex.toString(),
-          //       // ),
-          //     ),
-          //   )
-          // ),
-          // SliverPadding(
-          //   padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 5.0),
-          //   sliver: SliverList(
-          //     delegate: SliverChildBuilderDelegate(
-          //       (BuildContext context, int index) {
-          //         return titleBoxHeader;
-          //       },
-          //       childCount: 1,
-          //     ),
-          //   ),
-          // ),
-          SliverPadding(
-            padding: EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 5.0),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  return Row(
-                    // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.orange[300],
-                          borderRadius: BorderRadius.only(
-                            bottomRight: Radius.circular(15.0)
-                          ),
-                        ),
-                        padding: EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 5.0),
-                        height: 70.0,
-                        width: 280.0,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
-                          child: Text(
-                            "Please select a specific topic and whether you want to see the article or quiz.",
-                            style: TextStyle(
-                              color: Colors.white
-                            ),
-                            textAlign: TextAlign.start,
-                            
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              colors: [
-                                Colors.amber[800],
-                                // Colors.amber[300]
-                                Colors.amber[900]
-                              ]
-                            ),
-                            borderRadius: BorderRadius.horizontal(
-                              left: Radius.circular(15.0)
-                            ),
-                          ),
-                          margin: EdgeInsets.only(left: 20.0),
-                          height: 70.0,
-                          child: Center(child: 
-                            IconButton(
-                              icon: Icon(FontAwesomeIcons.slidersH),
-                              color: Colors.white,
-                              onPressed: (){
-                                _slidersAlertDialog();
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
+            // SliverPersistentHeader(
+            //   delegate: HeroHeader(
+            //     onLayoutToggle: onLayoutToggle,
+            //     minExtent: 150.0,
+            //     maxExtent: 250.0,
                 
+            //   ),
+            // ),
+            SliverAppBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: Colors.orangeAccent,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back_ios),
+                onPressed: (){
+                  // Navigator.(context, ModalRoute.withName("/loginPage"));
+                  // Navigator.popUntil(context, ModalRoute.withName('/generalTopicsPage'));
+                  Navigator.push(context, MaterialPageRoute(
+                    //make sure that if you go back got popping//pushing with a route, that you give it the necessary parameters!!! function might break bc widget.user.email might call on null do to calling GeneralTopicsPage without having the 'user' property filled in
+                    builder: (context) => GeneralTopicsPage(
+                      user: widget.user,
+                      googleSignIn: widget.googleSignIn,
+                    ),
+                  ));
                 },
-                childCount: 1,
+              ),
+              pinned: true,
+              // expandedHeight: 300.0,
+              // floating: true,
+              // snap: false,
+              // flexibleSpace: Padding(
+              //   padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+              //   child: titleBoxHeader,
+              // ),
+              title: Text(
+                widget.appBarTitle.toString(),
+                style: TextStyle(
+                  fontFamily: "viga"
+                ),
               ),
             ),
-          ),
-          
-          SliverPadding(
-            padding: EdgeInsets.all(16.0),
-            sliver: SliverFixedExtentList(
-              itemExtent: 460.0,
-                delegate:  SliverChildBuilderDelegate(
+            //   expandedHeight: 200.0,
+            //   bottom: PreferredSize(
+            //     preferredSize: new Size.fromHeight(200.0),
+            //     child: Container(
+            //       // child: Text(
+            //       //   widget.generalTopicIndex.toString(),
+            //       // ),
+            //     ),
+            //   )
+            // ),
+            // SliverPadding(
+            //   padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 5.0),
+            //   sliver: SliverList(
+            //     delegate: SliverChildBuilderDelegate(
+            //       (BuildContext context, int index) {
+            //         return titleBoxHeader;
+            //       },
+            //       childCount: 1,
+            //     ),
+            //   ),
+            // ),
+            SliverPadding(
+              padding: EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 5.0),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int index) {
-                  return StreamBuilder(
-                    stream: Firestore.instance.collection("content/" + widget.generalTopicIndex + "/specificTopics").snapshots(),
-                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (!snapshot.hasData) {
-                        return Container(
-                          child: Center(
-                            child: CircularProgressIndicator(),
+                    return Row(
+                      // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.orange[300],
+                            borderRadius: BorderRadius.only(
+                              bottomRight: Radius.circular(15.0)
+                            ),
                           ),
-                        );
-                      } else {
-                        return _buildSpecificItems(context, snapshot.data.documents[index], index);
-                      }
-                    },
-                  );
-                },
-                childCount: pageLength
-                /**
-                 * TODO:
-                 * childCount needs to be a value based on snapshot.data.documents.length from the collection "content". This will basically be the number of documents inside of "content".
-                 * 
-                 * **/
+                          padding: EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 5.0),
+                          height: 70.0,
+                          width: 280.0,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10.0),
+                            child: Text(
+                              "Please select a specific topic and whether you want to see the article or quiz.",
+                              style: TextStyle(
+                                color: Colors.white
+                              ),
+                              textAlign: TextAlign.start,
+                              
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              _slidersAlertDialog();
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  colors: [
+                                    Colors.amber[800],
+                                    // Colors.amber[300]
+                                    Colors.amber[900]
+                                  ]
+                                ),
+                                borderRadius: BorderRadius.horizontal(
+                                  left: Radius.circular(15.0)
+                                ),
+                              ),
+                              margin: EdgeInsets.only(left: 20.0),
+                              height: 70.0,
+                              child: Center(child:
+                                Icon(
+                                  FontAwesomeIcons.slidersH,
+                                  color: Colors.white,
+                                ),
+                                // IconButton(
+                                //   icon: Icon(FontAwesomeIcons.slidersH),
+                                //   color: Colors.white,
+                                //   onPressed: () {
+                                //     _slidersAlertDialog();
+                                //   },
+                                // ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  
+                  },
+                  childCount: 1,
+                ),
               ),
             ),
-          ),
-        ],
+            
+            SliverPadding(
+              padding: EdgeInsets.all(16.0),
+              sliver: SliverFixedExtentList(
+                itemExtent: 460.0,
+                  delegate:  SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                    return StreamBuilder(
+                      stream: Firestore.instance.collection("content/" + widget.generalTopicIndex + "/specificTopics").snapshots(),
+                      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (!snapshot.hasData) {
+                          return Container(
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        } else {
+                          return _buildSpecificItems(context, snapshot.data.documents[index], index);
+                        }
+                      },
+                    );
+                  },
+                  childCount: pageLength
+                  /**
+                   * TODO:
+                   * childCount needs to be a value based on snapshot.data.documents.length from the collection "content". This will basically be the number of documents inside of "content".
+                   * 
+                   * **/
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   
@@ -402,44 +415,7 @@ _SpecificTopicsPageState({
   Widget _buildSpecificItems(BuildContext context, DocumentSnapshot document, int index) {
 
     String highScore = "N/A";
-    // print(widget.user.email);
-
-    // print(document.data.keys);
-
-    // var documentLength = 0;
-
-    // _getDocumentLength() {
-
-    //   // final CollectionReference collectionReference = 
-    //   // Firestore.instance.collection(
-    //   //   "/content/" + widget.generalTopicIndex + "/specificTopics/" + document.documentID  + "/questions/");
-
-    //   final CollectionReference collectionReference = 
-    //   Firestore.instance.collection(
-    //   "/content/adjectives/specificTopics/formingAdjectives/questions");
-
-        
-
-    //   collectionReference.snapshots().listen((snapshot){
-    //     if (snapshot != null) {
-    //       setState(() {
-    //         documentLength = snapshot.documents.length;
-    //         //myText = snapshot.data['desc'];
-    //         print("Fetch Sucessful" + documentLength.toString());
-    //       });
-    //     }
-    //   });
-    // }
-
-    // _getDocumentLength();
-    // print(documentLength.toString());
-
-    // // print(_getDocumentLength());
-
-    // var documentReference = Firestore.instance.collection(
-    //     "/content/adjectives/specificTopics/" + document.documentID  + "/questions/");
-      
-
+    
 
     if (mapOfScoreKeys != null) {
       // print(mapOfScoreKeys.toString() + " this is my moment");
@@ -461,6 +437,7 @@ _SpecificTopicsPageState({
             specificTopicIndex: document.documentID,
             passedInIndex: 0,
             numberCorrect: 0,
+            numberWrong: 0,
             user: widget.user,
             googleSignIn: widget.googleSignIn,
           )
@@ -484,8 +461,8 @@ _SpecificTopicsPageState({
             spreadRadius: 3.0
           ),]
         ),
-        padding: EdgeInsets.all(5.0),
-        margin: EdgeInsets.all(10.0),
+
+        margin: EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
         height: 300.0,
         child: Container(
           child: Column(
@@ -638,7 +615,7 @@ _SpecificTopicsPageState({
                             // + document.data.length.toString(),
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 30.0
+                              fontSize: 25.0
                             ),
                           ),
                         ),

@@ -7,6 +7,7 @@ import 'generalTopicsPage.dart';
 import 'specificTopicsPage.dart';
 import 'main.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'onWillPopFunction.dart';
 
 
 class QuestionPage extends StatefulWidget {
@@ -21,6 +22,7 @@ class QuestionPage extends StatefulWidget {
 
   var passedInIndex = 0;
   var numberCorrect = 0;
+  var numberWrong = 0;
 
 
   QuestionPage({
@@ -29,6 +31,7 @@ class QuestionPage extends StatefulWidget {
     this.specificTopicIndex, 
     this.passedInIndex,
     this.numberCorrect,
+    this.numberWrong,
     this.user,
     this.googleSignIn,
   });
@@ -47,105 +50,125 @@ class _QuestionPageState extends State<QuestionPage> {
 
     //use this function to update any question category
 
-    for (int index = 1; index <= 8; index++) {
+    for (int index = 1; index <= 11; index++) {
 
       var answers = [
-        'correct',
-        'correct',
-        'correct',
-
-        'correct',
-        'correct',
-        'correct',
-        'correct',
-        'correct',
-        'correct',
-        'correct',
-        'correct',
+        'Rojo',
+        'Verde',
+        'Azul',
+        'Amarillo',
+        'Gris',
+        'Negro',
+        'Anaranjado',
+        'Blanco',
+        'Morado',
+        'Café',
+        'Rosa',
       ];
 
       var o1 = [
-        'wrong1',
-        'wrong1',
-        'wrong1',
-
-        "wrong",
-        'wrong', 
-        'wrong', 
-        'wrong', 
-        'wrong', 
-        'correct', 
-        'wrong', 
-        'wrong', 
+        'Rojo',
+        'Morado',
+        'Verde',
+        'Rojo',
+        'Gris', 
+        'Anaranjado', 
+        'Morado', 
+        'Negro', 
+        'Morado', 
+        'Azul', 
+        'Café', 
       ];
 
       var o2 = [
-        'wrong2',
-        'correct', 
-        'wrong2',
-
-        "correct",
-        'wrong', 
-        'wrong', 
-        'wrong', 
-        'wrong', 
-        'wrong', 
-        'wrong', 
-        'correct',
+        'Amarillo',
+        'Verde', 
+        'Azul',
+        'Morado',
+        'Anaranjado', 
+        'Gris', 
+        'Amarillo', 
+        'Morado', 
+        'Gris', 
+        'Café', 
+        'Verde',
       ];
 
       var o3 = [
-        'correct', 
-        'wrong3', 
-        'wrong3',
-
-        "wrong",
-        'wrong', 
-        'correct', 
-        'wrong', 
-        'correct', 
-        'wrong', 
-        'wrong', 
-        'wrong',
-        
-
+        'Azul', 
+        'Gris', 
+        'Negro',
+        'Morado',
+        'Morado', 
+        'Negro', 
+        'Anaranjado', 
+        'Rosa', 
+        'Amarillo', 
+        'Verde', 
+        'Gris',
       ];
 
       var o4 = [
-        'wrong4', 
-        'wrong4', 
-        'correct',
-
-        "wrong",
-        'correct', 
-        'wrong', 
-        'correct', 
-        'wrong', 
-        'wrong', 
-        'correct', 
-        'wrong',
-
+        'Rosa', 
+        'Rojo', 
+        'Blueo',
+        'Amarillo',
+        'Griz', 
+        'Azul', 
+        'Rosa', 
+        'Blanco', 
+        'Rosa', 
+        'Negro', 
+        'Rosa',
       ];
 
       var titles = [
-        'having?',
-        "no i am not",
-        "i hope it worked lol",
+        'Red',
+        'Green',
+        'Blue',
+        'Yellow',
+        'Gray',
+        'Black',
+        'Orange',
+        'White',
+        'Purple',
+        'Que ustedes en mi basura, sino no ___ estoy moy super?',
+        //Brown
+        'Pink',
+      ];
 
-        "okay imma start not",
-        "nope",
-        "Que ustedes en mi casa por favor? Estoy muy stupendo para estoy cansando en este profesora.",
-        "yuh",
-        "Red",
-        "Just listen up",
-        "Okay what is up",
-        "nah stop that, okay?"
+      var directions = [
+        'Choose the Spanish translation of this color.',
+        'Choose the Spanish translation of this color.',
+        'Choose the Spanish translation of this color.',
+        'Choose the Spanish translation of this color.',
+        'Choose the Spanish translation of this color.',
+        'Choose the Spanish translation of this color.',
+        'Choose the Spanish translation of this color.',
+        'Choose the Spanish translation of this color.',
+        'Choose the Spanish translation of this color.',
+        'Choose the Spanish translation of this color.',
+        'Choose the Spanish translation of this color.',
+      ];
+
+      var explanation = [
+        'Rojo means "red" in Spanish. It helps to remember that they both start with the same letter.',
+        'Verde means "green" in Spanish. Thinking that VEgetables are green might help remember that VErde is green.',
+        'Azul means "blue" in Spanish.',
+        'Amarillo means "yellow" in Spanish. It\'s worth mentioning that both "yellow" and "amarillo" both have double letter Ls.',
+        'Gris means "gray" in Spanish. Both GRis and GRay start with "Gr."',
+        'Negro means "black" in Spanish.',
+        'Anaranjado means "orange" in Spanish.',
+        'Blanco means "white" in Spanish. It kind of sounds like "BLANK" piece of white paper.',
+        'Morado means "purple" in Spanish.',
+        'Café means "brown" in Spanish. Café kind of sounds like coffee so thinking of it might remind you that Café means brown.',
+        'Rosa means "pink" in Spanish. It might help to remember that some ROSes are pink.',
       ];
 
 
       final DocumentReference documentReference = 
       Firestore.instance.document(
-        "/content/adverbs/specificTopics/formingAdverbs/questions/" + index.toString()
+        "/content/adjectives/specificTopics/formingAdjectives/questions/" + index.toString()
       );
       //just change the 'formingAdjectives', e.g. the section AFTER specificTopics
 
@@ -157,6 +180,8 @@ class _QuestionPageState extends State<QuestionPage> {
         'o2' : o2[index - 1],
         'o3' : o3[index - 1],
         'o4' : o4[index - 1],
+        'directions' :  directions[index - 1],
+        'explanation' : explanation[index - 1],
       };
       //might need to change the plus or minus after the index
 
@@ -337,7 +362,7 @@ class _QuestionPageState extends State<QuestionPage> {
                 ),
               );
             } else {
-              return _buildQuestionPage(context, snapshot.data.documents[widget.passedInIndex], snapshot.data.documents.length, widget.passedInIndex);
+              return _buildQuestionPage(context, snapshot.data.documents[widget.passedInIndex], snapshot.data.documents.length, widget.passedInIndex, snapshot);
               // return ListView.builder(
               //   scrollDirection: Axis.vertical,
               //   // itemExtent: 10.0,
@@ -353,7 +378,15 @@ class _QuestionPageState extends State<QuestionPage> {
     );
   }
 
-  Widget _checkAndCreateAnswer(optionNumber, document, index, documentLength,  ) {
+  Widget _checkAndCreateAnswer(
+      int optionNumber,
+      DocumentSnapshot document,
+      int index,
+      int documentLength,
+      AsyncSnapshot<QuerySnapshot> snapshot
+    ) {
+
+    var currentDocument = document;
 
     var optionColor = Colors.white;
 
@@ -365,7 +398,9 @@ class _QuestionPageState extends State<QuestionPage> {
       
         onTap: () {
           setState(() {
-            optionColor = Colors.grey;   
+            // snapshot.documents[index + 1];
+            
+            optionColor = Colors.grey; 
           });
           if (document['o' + '$optionNumber'] == document['answer']) {
             //checks if you clicked the right answer
@@ -381,6 +416,7 @@ class _QuestionPageState extends State<QuestionPage> {
               _updateScores(widget.numberCorrect + 1, documentLength);
 
 
+              //Navigator 1 (don't change)
               Navigator.push(context, MaterialPageRoute(
                 builder: (context) => SpecificTopicsPage(
                   generalTopicIndex: widget.generalTopicIndex, 
@@ -397,11 +433,16 @@ class _QuestionPageState extends State<QuestionPage> {
             }
             else {
               //if not last question, push to next question with an passedInIndex increased by one; passedInIndex value will be used to retrieve document
+
+
+
+                //Navigator 2
                 Navigator.push(context, MaterialPageRoute(
                   builder: (context) => QuestionPage(
                     generalTopicIndex: widget.generalTopicIndex, specificTopicIndex: widget.specificTopicIndex,
                     passedInIndex: index + 1,
                     appBarTitle: widget.appBarTitle,
+                    numberWrong: widget.numberWrong,
                     numberCorrect: widget.numberCorrect + 1,
                     user: widget.user,
                     googleSignIn: widget.googleSignIn,
@@ -415,18 +456,14 @@ class _QuestionPageState extends State<QuestionPage> {
             if (index == documentLength - 1) {
               //checks if you're on the last question
               print("We're done here!");
-              //update Firestore with highScore
-              //check if current score is larger than the previous one
-
-              //pass in current number correct
-
 
               _updateScores(widget.numberCorrect, documentLength);
 
+              //Navigator 3 (don't change)
               Navigator.push(context, MaterialPageRoute(
                 builder: (context) => SpecificTopicsPage(
                   generalTopicIndex: widget.generalTopicIndex, 
-                  appBarTitle: widget.appBarTitle, 
+                  appBarTitle: widget.appBarTitle,
                   user: widget.user,
                   googleSignIn: widget.googleSignIn,
                 )
@@ -437,12 +474,16 @@ class _QuestionPageState extends State<QuestionPage> {
             }
             else {
               //if not last question, push to next question with an passedInIndex increased by one; passedInIndex value will be used to retrieve document
+
+
+                //Navigator 4
                 Navigator.push(context, MaterialPageRoute(
                   builder: (context) => QuestionPage(
                     generalTopicIndex: widget.generalTopicIndex, specificTopicIndex: widget.specificTopicIndex,
                     passedInIndex: index + 1,
                     appBarTitle: widget.appBarTitle,
                     numberCorrect: widget.numberCorrect,
+                    numberWrong: widget.numberWrong + 1,
                     user: widget.user,
                     googleSignIn: widget.googleSignIn,
                   ),
@@ -474,7 +515,14 @@ class _QuestionPageState extends State<QuestionPage> {
     );
   }
 
-  Widget _buildQuestionPage(BuildContext context, DocumentSnapshot document, int documentLength, int index) {
+  Widget _buildQuestionPage(BuildContext context, DocumentSnapshot document, int documentLength, int index, snapshot) {
+
+
+
+   
+              
+                    
+         
 
     final double statusBarHeight = MediaQuery
       .of(context)
@@ -483,173 +531,301 @@ class _QuestionPageState extends State<QuestionPage> {
 
     final double barHeight = 66.0;
 
-      
-    return GestureDetector(
-      onTap: (){
-        // print(document.reference.toString());
-        // Navigator.push(context, MaterialPageRoute(
-        //   builder: (context) => QuestionPage(generalTopicIndex: document.documentID,)
-        // ));
-      },
+    var _questionFontSize = 30.0;
+    List<String> _splitQuestion = document['title'].split(" ");
+    // print(_splitQuestion);
+    if (_splitQuestion.length > 5) {
+      _questionFontSize = 20.0;
+    }
 
-      
-      
-      child: Column(
-        children: <Widget>[
-          Container(
-            width: double.infinity,
-            height: 80.0,
-            color: Colors.blue,
-            child: 
-          
-                Padding(
-                  padding: const EdgeInsets.only(top: 15.0),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Container(
-                          // alignment: FractionalOffset.centerRight,
-                          padding: EdgeInsets.only(left: 45.0),
-                          child: Center(
-                            child: Text(
-                                "Question "
-                                "${index + 1}" +
-                                " of " +
-                                "${documentLength.toString()}",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  // fontWeight: FontWeight.bold,
-                                  fontFamily: "viga",
-                                  
-                                ),
+    Future<bool> _exitApp2(BuildContext context) {
+  return showDialog(
+        context: context,
+        child: new AlertDialog(
+          title: new Text('Do you want to exit this application?'),
+          content: new Text('We hate to see you leave...'),
+          actions: <Widget>[
+            new FlatButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: new Text('No'),
+            ),
+            new FlatButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: new Text('Yes'),
+            ),
+          ],
+        ),
+      ) ??
+      false;
+}
+
+      //FIX THIS!!! IT'S BROKEN!!!!!
+    return WillPopScope(
+      onWillPop: () => _exitApp2(context),
+      child: GestureDetector(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              width: double.infinity,
+              height: 80.0,
+              color: Colors.orangeAccent,
+              child: 
+                  Padding(
+                    padding: const EdgeInsets.only(top: 15.0),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Container(
+                            // alignment: FractionalOffset.centerRight,
+                            padding: EdgeInsets.only(left: 45.0),
+                            child: Center(
+                              child: Text(
+                                  "Question "
+                                  "${index + 1}" +
+                                  " of " +
+                                  "${documentLength.toString()}",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    // fontWeight: FontWeight.bold,
+                                    fontFamily: "viga",
+                                    
+                                  ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Container(
-                        child: IconButton(
-            onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) =>
-                    AlertDialog(
-                      content: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20.0)
-                        ),
-                        height: 200.0,
-                        child: Column(
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Text(
-                                "Are you sure you want to exit this quiz? Your progress and score will not be saved.",
-                                style: TextStyle(
-                                  fontSize: 16.0
+               
+                        Container(
+                          child: IconButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    
+                    builder: (BuildContext context) =>
+                      AlertDialog(
+                        content: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20.0)
+                          ),
+                          height: 200.0,
+                          child: Column(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text(
+                                  "Are you sure you want to exit this quiz? Your progress and score will not be saved.",
+                                  style: TextStyle(
+                                    fontSize: 16.0
+                                  ),
+                                  textAlign: TextAlign.center,
                                 ),
-                                textAlign: TextAlign.center,
                               ),
-                            ),
-                            Divider(),
-                            Padding(padding: EdgeInsets.only(bottom: 10.0),),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: <Widget>[
-                                InkWell(
-                                  onTap: (){
-                                      Navigator.push(context, MaterialPageRoute(
-                                        builder: (context) => SpecificTopicsPage(
-                                          generalTopicIndex: widget.generalTopicIndex, 
-                                          appBarTitle: widget.appBarTitle, 
-                                          user: widget.user,
-                                          googleSignIn: widget.googleSignIn,
-                                        )
-                                      ));
+                              Divider(),
+                              Padding(padding: EdgeInsets.only(bottom: 10.0),),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: <Widget>[
+                                  InkWell(
+                                    onTap: (){
+                                        Navigator.push(context, MaterialPageRoute(
+                                          builder: (context) => SpecificTopicsPage(
+                                            generalTopicIndex: widget.generalTopicIndex, 
+                                            appBarTitle: widget.appBarTitle, 
+                                            user: widget.user,
+                                            googleSignIn: widget.googleSignIn,
+                                          )
+                                        ));
+                                      },
+                                    child: Container(
+                                      padding: EdgeInsets.fromLTRB(25.0, 15.0, 25.0, 15.0),
+                                      child: Column(
+                                        children: <Widget>[
+                                          Icon(Icons.check, color: Colors.black,),
+                                          Padding(
+                                            padding: EdgeInsets.all(5.0),
+                                          ),
+                                          Text(
+                                            "Yes",
+                                            style: TextStyle(color: Colors.black),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.pop(context);
                                     },
-                                  child: Container(
-                                    padding: EdgeInsets.fromLTRB(25.0, 15.0, 25.0, 15.0),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Icon(Icons.check, color: Colors.black,),
-                                        Padding(
-                                          padding: EdgeInsets.all(5.0),
-                                        ),
-                                        Text(
-                                          "Yes",
-                                          style: TextStyle(color: Colors.black),
-                                        ),
-                                      ],
+                                    child: Container(
+                                      padding: EdgeInsets.fromLTRB(25.0, 15.0, 25.0, 15.0),
+                                      child: Column(
+                                        children: <Widget>[
+                                          Icon(Icons.close),
+                                          Padding(
+                                            padding: EdgeInsets.all(5.0),
+                                          ),
+                                          Text("Cancel"),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Container(
-                                    padding: EdgeInsets.fromLTRB(25.0, 15.0, 25.0, 15.0),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Icon(Icons.close),
-                                        Padding(
-                                          padding: EdgeInsets.all(5.0),
-                                        ),
-                                        Text("Cancel"),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-              );
-            },
-            // alignment: Alignment.centerRight,
-            icon: Icon(FontAwesomeIcons.times, color: Colors.white,),
-        ),
+                );
+              },
+              // alignment: Alignment.centerRight,
+              icon: Icon(FontAwesomeIcons.times, color: Colors.white,),
+          ),
   
-                      ),
-                    ],
+                        ),
+                      ],
+                    ),
+                  ),
+            ),
+
+           
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.orange[300],
+                borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(15.0)
+                ),
+              ),
+              margin: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
+              height: 70.0,
+              width: 280.0,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10.0, 20.0, 0.0, 0.0),
+                child: Text(
+                  document['directions'],
+                  style: TextStyle(
+                    color: Colors.white
+                  ),
+                  textAlign: TextAlign.start,
+                ),
+              ),
+            ),
+            
+            
+                
+            Center(
+              child: Container(
+                margin: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 30.0),
+                padding: EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  // color: Colors.blueAccent,
+                  borderRadius: BorderRadius.circular(20.0),
+                   gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    colors: [
+                      Colors.amber[400],
+                      // Colors.amber[300]
+                      Colors.amber[500]
+                    ]
                   ),
                 ),
-          ),
-
-          Container(
-            child: Text("Number correct: " + widget.numberCorrect.toString()),
-          ),
-              
-          Container(
-            margin: EdgeInsets.fromLTRB(20.0, 50.0, 20.0, 30.0),
-            padding: EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              color: Colors.blueAccent,
-              borderRadius: BorderRadius.circular(20.0)
-            ),
-            child: Text(
-              document['title'],
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 30.0,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+                child: Text(
+                  document['title'],
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: _questionFontSize,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),          
               ),
-            ),          
-          ),
-          _checkAndCreateAnswer(1, document, index, documentLength),
-          _checkAndCreateAnswer(2, document, index, documentLength),
-          _checkAndCreateAnswer(3, document, index, documentLength),
-          _checkAndCreateAnswer(4, document, index, documentLength),
-          MaterialButton(
-            child: Text("UPDATE!!!"),
-            color: Colors.orange,
-            onPressed: _updateQuestions,
-          ),
+            ),
+            _checkAndCreateAnswer(1, document, index, documentLength, snapshot),
+            _checkAndCreateAnswer(2, document, index, documentLength, snapshot),
+            _checkAndCreateAnswer(3, document, index, documentLength, snapshot),
+            _checkAndCreateAnswer(4, document, index, documentLength, snapshot),
 
-        ],
+            // MaterialButton(
+            //   child: Text("ZZZZ UPDATE!!!"),
+            //   color: Colors.orange,
+            //   onPressed: _updateQuestions,
+            // ),
+
+            Container(
+              decoration: BoxDecoration(
+                 gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  colors: [
+                    Colors.amber[500],
+                    Colors.amber[600]
+                  ]
+                ),
+                borderRadius: BorderRadius.horizontal(
+                  right: Radius.circular(15.0)
+                ),
+              ),
+              margin: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+              height: 50.0,
+              width: 170.0,
+              child: Row(
+                children: <Widget>[
+                  //correct answers
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.0),
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        colors: [
+                          Colors.green[400],
+                          Colors.green[500]
+                        ]
+                      ),
+                    ),
+                    margin: const EdgeInsets.only(left: 10.0),
+                    height: 20.0,
+                    width: 20.0,
+                  ),
+                  Container(
+                    child: Text(
+                      "  :  " + widget.numberCorrect.toString(),
+                      style: TextStyle(
+                        color: Colors.white
+                      ),
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                  //incorrect answers
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.0),
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        colors: [
+                          Colors.red[400],
+                          Colors.red[500]
+                        ]
+                      ),
+                    ),
+                    margin: const EdgeInsets.only(left: 40.0),
+                    height: 20.0,
+                    width: 20.0,
+                  ),
+                  Container(
+                    child: Text(
+                      "  :  " + widget.numberWrong.toString(),
+                      style: TextStyle(
+                        color: Colors.white
+                      ),
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+          ],
+        ),
       ),
     );
   }

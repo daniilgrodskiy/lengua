@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:Lengua/onWillPopFunction.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -48,6 +49,8 @@ class _GeneralTopicsPageState extends State<GeneralTopicsPage> {
 
 
 
+
+
      var decoratedBox = DecoratedBox(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -74,13 +77,8 @@ class _GeneralTopicsPageState extends State<GeneralTopicsPage> {
       );
 
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.orange,
-        
-      ),
-      height: double.infinity,
-      width: double.infinity,
+    return WillPopScope(
+      onWillPop: () => exitApp(context),
       child: Scaffold(
         body: CustomScrollView(
           slivers: <Widget>[

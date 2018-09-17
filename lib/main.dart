@@ -42,6 +42,11 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = new GoogleSignIn();
 
+  void _signOut() {
+    googleSignIn.signOut();
+    print("User signed out");
+  }
+
   Future<FirebaseUser> _signIn() async {
 
     GoogleSignInAccount googleSignInAccount = 
@@ -241,6 +246,21 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 child: Image.asset(
                   "assets/google_sign_in.png",
                   width: 200.0,
+                ),
+              ),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: InkWell(
+                onTap: () => _signOut(),
+                child: Center(
+                  child: Container(
+                    child: Center(child: Text("Sign Out")),
+                    color: Colors.orange,
+                    width: 200.0,
+                    height: 50.0
+                  ),
                 ),
               ),
             )
